@@ -3,82 +3,93 @@
 #include <stdlib.h>
 #include <string.h>
 
-int yylex();
-void yyerror(const char* s);
+typedef struct {
+    int intValue;
+    char* strValue;
+} YYSTYPE;
+
+#define YYSTYPE YYSTYPE
+
+extern int yylex();
+extern int yyparse();
+extern FILE* yyin;
 
 %}
 
 %token POUSAR DECOLAR AJUSTAR_ANGULO ATIVAR_FOGUETE ALINHAMENTO_ORBITA AJUSTAR_POSICAO
-%token VAR PRINT IF ELSE LOOP EQ GT LT '+' '-' '*' '/' '(' ')' '{' '}' ',' NUMBER IDENTIFIER TIME_S TIME_M TIME_H
+%token VAR PRINT IF ELSE LOOP LESS_THAN GREATER_THAN EQUAL PLUS MINUS MULTIPLY DIVIDE
+%token LPAREN RPAREN COMMA LBRACE RBRACE NEWLINE INT IDENTIFIER
 
-%left '+' '-'
-%left '*' '/'
+%union {
+    int intValue;
+    char* strValue;
+}
 
-%nonassoc EQ GT LT
+%type <intValue> INT
+%type <strValue> IDENTIFIER
+
+%start PROGRAM
 
 %%
 
-program: statement { printf("Programa reconhecido com sucesso!\n"); }
-       ;
+PROGRAM : STATEMENT;
 
-statement: '\n'
-         | assignment '\n'
-         | print '\n'
-         | variable '\n'
-         | flight_controller '\n'
-         | spacial_commands '\n'
-         | if_statement
-         | loop_statement
-         ;
+BLOCK : LBRACE STATEMENT RBRACE;
 
-assignment: IDENTIFIER '=' expression { printf("Atribuição reconhecida: %s = %f\n", $1, $3); }
-          ;
+STATEMENT : NEWLINE
+          | ASSIGNMENT NEWLINE
+          | PRINT LPAREN EXPRESSION RPAREN NEWLINE
+          | VARIABLE NEWLINE
+          | FLIGHT_CONTROLLER NEWLINE
+          | SPACIAL_COMANDS NEWLINE;
 
-print: PRINT '(' expression ')' { printf("Comando de impressão reconhecido: %f\n", $3); }
-     ;
+FLIGHT_CONTROLLER : POUSAR | DECOLAR | AJUSTAR_ANGULO;
 
-variable: VAR IDENTIFIER { printf("Declaração de variável reconhecida: %s\n", $2); }
-        ;
+SPACIAL_COMANDS : ATIVAR_FOGUETE LPAREN INT RPAREN
+               | ALINHAMENTO_ORBITA LPAREN INT RPAREN
+               | AJUSTAR_POSICAO LPAREN COORDINATES RPAREN;
 
-flight_controller: POUSAR
-                | DECOLAR
-                | AJUSTAR_ANGULO
-                ;
+VARIABLE : VAR IDENTIFIER NEWLINE;
 
-spacial_commands: ATIVAR_FOGUETE '(' NUMBER ')' { printf("Comando espacial reconhecido: Ativar foguete com força %f\n", $3); }
-               | ALINHAMENTO_ORBITA '(' NUMBER ')' { printf("Comando espacial reconhecido: Alinhamento de órbita com ângulo %f\n", $3); }
-               | AJUSTAR_POSICAO '(' coordinates ')' { printf("Comando espacial reconhecido: Ajustar posição para (%f, %f)\n", $3.x, $3.y); }
-               ;
+ASSIGNMENT : IDENTIFIER EQUAL EXPRESSION;
 
-coordinates: FLOAT ',' FLOAT { $$ = create_coordinates($1, $3); }
-           ;
+PRINT : PRINT LPAREN EXPRESSION RPAREN;
 
-if_statement: IF '(' boolexp ')' '{' statement '}' { printf("Estrutura if reconhecida.\n"); }
-            | IF '(' boolexp ')' '{' statement '}' ELSE '{' statement '}' { printf("Estrutura if-else reconhecida.\n"); }
-            ;
+IF : IF LPAREN BOOLEXP RPAREN BLOCK (ELSE BLOCK)?;
 
-loop_statement: LOOP '(' boolexp ')' '{' statement '}' { printf("Estrutura de loop reconhecida.\n"); }
-              ;
+LOOP : LOOP LPAREN BOOLEXP RPAREN BLOCK;
 
-boolexp: expression EQ expression { printf("Expressão booleana reconhecida: %f == %f\n", $1, $3); }
-       | expression GT expression { printf("Expressão booleana reconhecida: %f > %f\n", $1, $3); }
-       | expression LT expression { printf("Expressão booleana reconhecida: %f < %f\n", $1, $3); }
-       ;
+BOOLEXP : EXPRESSION
+        | EXPRESSION LESS_THAN EXPRESSION
+        | EXPRESSION GREATER_THAN EXPRESSION
+        | EXPRESSION EQUAL EXPRESSION;
 
-expression: term { $$ = $1; }
-          | expression '+' term { $$ = $1 + $3; }
-          | expression '-' term { $$ = $1 - $3; }
-          ;
+EXPRESSION : TERM
+           | EXPRESSION PLUS TERM
+           | EXPRESSION MINUS TERM;
 
-term: factor { $$ = $1; }
-    | term '*' factor { $$ = $1 * $3; }
-    | term '/' factor { $$ = $1 / $3; }
-    ;
+TERM : FACTOR
+     | TERM MULTIPLY FACTOR
+     | TERM DIVIDE FACTOR;
 
-factor: NUMBER { $$ = $1; }
-      | '-' factor { $$ = -$2; }
-      | '(' expression ')' { $$ = $2; }
-      | IDENTIFIER { $$ = get_variable_value($1); }
-      ;
+FACTOR : PLUS FACTOR
+       | MINUS FACTOR
+       | NUMBER
+       | LPAREN EXPRESSION RPAREN
+       | IDENTIFIER;
+
+TYPE : INT | COORDINATES | TIME;
+
+COORDINATES : LPAREN INT COMMA INT COMMA RPAREN;
+
+IDENTIFIER : LETTER (LETTER | DIGIT | "_")*;
+
+TIME : INT "s" | INT "m" | INT "h";
+
+INT : DIGIT+;
+
+LETTER : [a-zA-Z];
+
+DIGIT : [0-9];
 
 %%

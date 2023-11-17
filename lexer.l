@@ -1,9 +1,13 @@
 %{
-#include "y.tab.h"
+#include "parser.tab.h"
 %}
 
-%%
+%option noyywrap
 
+DIGIT [0-9]
+LETTER [a-zA-Z]
+
+%%
 "pousar"                   { return POUSAR; }
 "decolar"                  { return DECOLAR; }
 "ajustar-ângulo"           { return AJUSTAR_ANGULO; }
@@ -15,23 +19,23 @@
 "if"                       { return IF; }
 "else"                     { return ELSE; }
 "loop"                     { return LOOP; }
-"("                        { return '('; }
-")"                        { return ')'; }
-"{"                        { return '{'; }
-"}"                        { return '}'; }
-","                        { return ','; }
-"=="                       { return EQ; }
-">"                        { return GT; }
-"<"                        { return LT; }
-"+"                        { return '+'; }
-"-"                        { return '-'; }
-"*"                        { return '*'; }
-"/"                        { return '/'; }
-"s"                        { return TIME_S; }
-"m"                        { return TIME_M; }
-"h"                        { return TIME_H; }
-[0-9]+                     { yylval.floatval = atof(yytext); return NUMBER; }
-[ \t\n]                    ;  // Ignorar espaços em branco e quebras de linha
-[a-zA-Z_][a-zA-Z0-9_]*     { yylval.strval = strdup(yytext); return IDENTIFIER; }
-
+"<"                        { return LESS_THAN; }
+">"                        { return GREATER_THAN; }
+"=="                       { return EQUAL; }
+"+"                        { return PLUS; }
+"-"                        { return MINUS; }
+"*"                        { return MULTIPLY; }
+"/"                        { return DIVIDE; }
+"("                        { return LPAREN; }
+")"                        { return RPAREN; }
+","                        { return COMMA; }
+"{"                        { return LBRACE; }
+"}"                        { return RBRACE; }
+"\n"                       { return NEWLINE; }
+{DIGIT}+                   { yylval.intValue = atoi(yytext); return INT; }
+{LETTER}({LETTER}|{DIGIT}|"_"|)* { yylval.strValue = strdup(yytext); return IDENTIFIER; }
 %%
+
+int yywrap() {
+    return 1;
+}
