@@ -34,7 +34,7 @@ EXPRESSION = TERM, { ("+" | "-"), TERM };
 
 TERM = FACTOR, { ("*" | "/"), FACTOR };
 
-FACTOR = (("+" | "-"), FACTOR) | NUMBER | "(", EXPRESSION, ")" | IDENTIFIER;
+FACTOR = (("+" | "-"), FACTOR) | INT | "(", EXPRESSION, ")" | IDENTIFIER;
 
 TYPE = INT | COORDINATES | TIME;
 
