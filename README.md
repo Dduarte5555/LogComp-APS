@@ -36,15 +36,13 @@ TERM = FACTOR, { ("*" | "/"), FACTOR };
 
 FACTOR = (("+" | "-"), FACTOR) | NUMBER | "(", EXPRESSION, ")" | IDENTIFIER;
 
-TYPE = INT | FLOAT | COORDINATES | TIME;
+TYPE = INT | COORDINATES | TIME;
 
-COORDINATES = "(", FLOAT, ",", FLOAT, ",", ")";
+COORDINATES = "(", INT, ",", INT, ",", ")";
 
 IDENTIFIER = LETTER, { LETTER | DIGIT | "_" };
 
-TIME = FLOAT, "s" | FLOAT, "m" | FLOAT, "h";
-
-FLOAT = INT, ".", INT;
+TIME = INT, "s" | INT, "m" | INT, "h";
 
 INT = DIGIT, { DIGIT };
 
