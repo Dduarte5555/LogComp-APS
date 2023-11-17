@@ -4,9 +4,6 @@
 
 %option noyywrap
 
-DIGIT [0-9]
-LETTER [a-zA-Z]
-
 %%
 "pousar"                   { return POUSAR; }
 "decolar"                  { return DECOLAR; }
@@ -32,8 +29,9 @@ LETTER [a-zA-Z]
 "{"                        { return LBRACE; }
 "}"                        { return RBRACE; }
 "\n"                       { return NEWLINE; }
-{DIGIT}+                   { yylval.intValue = atoi(yytext); return INT; }
-{LETTER}({LETTER}|{DIGIT}|"_"|)* { yylval.strValue = strdup(yytext); return IDENTIFIER; }
+[0-9]+                   { yylval.intValue = atoi(yytext); return INT; }
+[ \t\n]                    ;  // Ignorar espaços em branco e quebras de linha
+[a-zA-Z_][a-zA-Z0-9_]*     { yylval.strval = strdup(yytext); return IDENTIFIER; }
 %%
 
 int yywrap() {

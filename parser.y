@@ -74,7 +74,7 @@ TERM : FACTOR
 
 FACTOR : PLUS FACTOR
        | MINUS FACTOR
-       | NUMBER
+       | INT
        | LPAREN EXPRESSION RPAREN
        | IDENTIFIER;
 
