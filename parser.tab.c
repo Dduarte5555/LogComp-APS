@@ -72,10 +72,12 @@
 #include <stdio.h>
 
 extern int yylex();
-void yyerrok(const char *s) {printf("ERRO: %s\n", s);}
+void yyerror(const char *s);
 
+#undef yywrap
+#define yywrap() 0
 
-#line 79 "parser.tab.c"
+#line 81 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -533,9 +535,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    22,    22,    26,    27,    28,    29,    30,    31,    33,
-      33,    33,    35,    36,    37,    39,    41,    43,    55,    56,
-      57,    59,    60,    61,    63,    64,    65,    66,    67,    71
+       0,    24,    24,    28,    29,    30,    31,    32,    33,    35,
+      35,    35,    37,    38,    39,    41,    43,    45,    57,    58,
+      59,    61,    62,    63,    65,    66,    67,    68,    69,    73
 };
 #endif
 
@@ -1132,7 +1134,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1136 "parser.tab.c"
+#line 1138 "parser.tab.c"
 
       default: break;
     }
@@ -1325,5 +1327,17 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 73 "parser.y"
+#line 75 "parser.y"
 
+
+void yyerror(const char *s){
+        extern int yylineno;
+        extern char *yytext;
+
+        printf("\n Erro (%s): símbolo \"%s\" (linha %d)\n", s, yytext, yylineno);
+}
+
+int main(){
+        yyparse();
+        return 0;
+}

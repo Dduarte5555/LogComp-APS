@@ -2,8 +2,10 @@
 #include <stdio.h>
 
 extern int yylex();
-void yyerror(const char *s) {printf("ERRO: %s\n", s);}
+void yyerror(const char *s);
 
+#undef yywrap
+#define yywrap() 0
 %}
 
 %token POUSAR DECOLAR AJUSTAR_ANGULO ATIVAR_FOGUETE ALINHAMENTO_ORBITA AJUSTAR_POSICAO
@@ -11,8 +13,8 @@ void yyerror(const char *s) {printf("ERRO: %s\n", s);}
 %token LPAREN RPAREN COMMA LBRACE RBRACE NEWLINE INT IDEN TIME
 
 %union {
-    int intValue;
-    char* strValue;
+        int intValue;
+        char* strValue;
 }
 
 %start PROGRAM
@@ -71,3 +73,15 @@ TYPE : INT | COORDINATES | TIME;
 COORDINATES : LPAREN INT COMMA INT COMMA RPAREN;
 
 %%
+
+void yyerror(const char *s){
+        extern int yylineno;
+        extern char *yytext;
+
+        printf("\n Erro (%s): símbolo \"%s\" (linha %d)\n", s, yytext, yylineno);
+}
+
+int main(){
+        yyparse();
+        return 0;
+}

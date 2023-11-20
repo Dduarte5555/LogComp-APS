@@ -2,6 +2,8 @@
 #include "parser.tab.h"
 %}
 
+%option noyywrap
+
 %%
 "pousar"                   { return POUSAR; }
 "decolar"                  { return DECOLAR; }
@@ -29,6 +31,6 @@
 "\n"                       { return NEWLINE; }
 [0-9]+                   { yylval.intValue = atoi(yytext); return INT; }
 [ \t\n]                    ;  // Ignorar espaços em branco e quebras de linha
-[a-zA-Z_][a-zA-Z0-9_]*     { yylval.strval = strdup(yytext); return IDEN; }
-[0-9]+:[0-9]+:[0-9]+		{ yylval.strval = strdup(yytext); return TIME;}
+[a-zA-Z_][a-zA-Z0-9_]*     { yylval.strValue = strdup(yytext); return IDEN; }
+[0-9]+:[0-9]+:[0-9]+		{ yylval.strValue = strdup(yytext); return TIME;}
 %%
