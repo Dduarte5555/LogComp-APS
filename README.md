@@ -8,41 +8,39 @@ Feito por Diogo Duarte
 
 ## EBNF
 
-PROGRAM = STATEMENT;
+PROGRAM = STATEMENT
 
-BLOCK = "{" STATEMENT "}";
+BLOCK = "{" STATEMENT "}"
 
-STATEMENT = ( λ | ASSIGNMENT | PRINT | VARIABLE | FLIGHT_CONTROLLER | SPACIAL_COMANDS), "\n";
+STATEMENT = ( λ | ASSIGNMENT | PRINT | VARIABLE | FLIGHT_CONTROLLER | SPACIAL_COMANDS), "\n"
 
-FLIGHT_CONTROLLER ::= "pousar" | "decolar" | "ajustar_ângulo";
+FLIGHT_CONTROLLER ::= "pousar" | "decolar" | "ajustar_ângulo"
 
-SPACIAL_COMANDS = "ativar_foguete", "(", INT, ")" | "alinhamento-orbita", "(", INT, ")" | "ajustar_posição", "(", INT, ",", INT, ")";
+SPACIAL_COMANDS = "ativar_foguete", "(", INT, ")" | "alinhamento-orbita", "(", INT, ")" | "ajustar_posição", "(", INT, ",", INT, ")"
 
-VARIABLE = "var", IDENTIFIER, TYPE;
+VARIABLE = "var", IDENTIFIER, TYPE
 
-ASSIGNMENT = IDENTIFIER, "=", EXPRESSION;
+ASSIGNMENT = IDENTIFIER, "=", EXPRESSION
 
-PRINT = "Print", "(", EXPRESSION, ")";
+PRINT = "Print", "(", EXPRESSION, ")"
 
-IF = "if", "(", BOOLEXP, ")", BLOCK, ("else", BLOCK)?;
+IF = "if", "(", BOOLEXP, ")", BLOCK, ("else", BLOCK)?
 
-LOOP = "loop", "(", BOOLEXP, ")", BLOCK;
+LOOP = "loop", "(", BOOLEXP, ")", BLOCK
 
-BOOLEXP = EXPRESSION, { ("<" | ">" | "==" ), EXPRESSION } ;
+BOOLEXP = EXPRESSION, { ("<" | ">" | "==" ), EXPRESSION }
 
-EXPRESSION = TERM, { ("+" | "-"), TERM };
+EXPRESSION = TERM, { ("+" | "-"), TERM }
 
-TERM = FACTOR, { ("*" | "/"), FACTOR };
+TERM = FACTOR, { ("*" | "/"), FACTOR }
 
-FACTOR = (("+" | "-"), FACTOR) | INT | "(", EXPRESSION, ")" | IDENTIFIER;
+FACTOR = (("+" | "-"), FACTOR) | INT | "(", EXPRESSION, ")" | IDENTIFIER
 
-TYPE = INT | STR | TIME;
+TYPE = INT | STR 
 
-IDENTIFIER = LETTER, { LETTER | DIGIT | "_" };
+IDENTIFIER = LETTER, { LETTER | DIGIT | "_" }
 
-TIME = INT, "s" | INT, "m" | INT, "h";
-
-INT = DIGIT, { DIGIT };
+INT = DIGIT, { DIGIT }
 
 STR = LETTER, { LETTER | DIGIT}; 
 
