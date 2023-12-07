@@ -14,7 +14,7 @@ BLOCK = "{" STATEMENT "}"
 
 STATEMENT = ( λ | ASSIGNMENT | PRINT | VARIABLE | FLIGHT_CONTROLLER | SPACIAL_COMANDS), "\n"
 
-FLIGHT_CONTROLLER ::= "pousar" | "decolar" | "ajustar_ângulo"
+FLIGHT_CONTROLLER = "pousar" | "decolar" | "ajustar_ângulo"
 
 SPACIAL_COMANDS = "ativar_foguete", "(", INT, ")" | "alinhamento-orbita", "(", INT, ")" | "ajustar_posição", "(", INT, ",", INT, ")"
 
